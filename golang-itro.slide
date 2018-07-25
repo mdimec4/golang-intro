@@ -1,0 +1,215 @@
+Practical Golang
+Golang quick intro
+25 Jul 2018
+
+Mihael Dimec
+miha.dimec@visionect.com
+@mihad
+
+* Workspace and Packages
+
+* Setup workspace and `$GOPATH`
+- Go programmers typically keep all their Go code in a single workspace.
+- A workspace contains many version control repositories (managed by Git, for example).
+- Each repository contains one or more packages.
+- Each package consists of one or more Go source files in a single directory.
+- The path to a package's directory determines its import path.
+- `$GOPATH` environment variable specifies the location of your workspace
+- It is convenient to set `$GOPATH` in your `bashrc` or/and `profile` or in similar shell startup script.
+
+* Workspace directory structure
+
+A workspace is a directory hierarchy with three directories at its root: 
+
+- `src` contains Go source files,
+- `pkg` contains package objects, and 
+- `bin` contains executable commands. 
+
+What is the purpose:
+
+- The `go` tool builds source packages and installs the resulting binaries to the `pkg` and `bin` directories.
+
+- The `src` subdirectory typically contains multiple version control repositories (such as for Git or Mercurial) that track the development of one or more source packages. 
+
+- It is convenient to add this location to your `$PATH`)
+
+  export GOPATH=$(go env GOPATH)
+
+* Workspace directory structure
+  $GOPATH
+  |--bin/
+  |  |--hello                       # command executable
+  |  |--outyet                      # command executable
+  |--pkg/
+  |  |--linux_amd64/
+  |     |--github.com/golang/example/
+  |                          |--stringutil.a # package object
+  |--src/
+     |--github.com/golang/example/  # If package is in source repository (GitHub), it is common to
+     |                    |         # use the root of that source repository as your base path!
+     |                    |--.git/              # Git repository metadata
+     |                    |--hello/
+     |                    |  |--hello.go        # command source
+     |                    |--outyet/
+     |                    |  |--main.go         # command source
+     |                    |  |--main_test.go    # test source
+     |                    |--stringutil/
+     |                    |  |--reverse.go      # package source
+     |                    |  |--reverse_test.go # test source
+     |--golang.org/x/image/      
+     |               |--.git/          # Git repository metadata
+     |               |--bmp/
+     |                  |--reader.go   # package source
+     |                  |--writer.go   # package source
+
+* Packages and Imports
+
+- Every Go program is made up of packages
+- Programs start running in package main. 
+
+.play packages.go
+
+- This program is using the packages (standard library) with import paths `"fmt"` and `"math/rand"`.
+- By convention, the package name is the same as the last element of the import path. For instance, the `"math/rand"` package comprises files that begin with the statement: *package* *rand* 
+
+* How to get a package you need from GitHub or other repositories 
+
+  go get [-d] [-f] [-fix] [-insecure] [-t] [-u] [-v] [build flags] [packages]
+
+- Get downloads the packages named by the import paths, along with their dependencies. It then installs the named packages, like *go* *install*.
+
+- get package from GitHub
+
+  go get github.com/mdimec4/allrecipes
+- use this package
+
+.code recipes.go
+
+* Go dependency manager
+
+- For bigger projects you really need dependency manager
+
+- We use Dep
+.link https://github.com/golang/dep 
+
+* Methodes and Interfaces
+
+* Methodes
+
+A method is a function with special receiver argument
+
+.play methods.go
+
+* Methodes - pointer receiver
+
+- Methods with pointer receivers can modify the value to which the receiver points.
+
+.play methods-pointers.go
+
+- The second reason why you want to use pointer receiver is that this way you avoid copying the value on each function call. This can be more efficient if the receiver is a large struct, for example.
+
+* Interfaces
+
+- An interface type is defined as a set of method signatures. 
+- A value of interface type can hold any value that implements those methods.
+- Interfaces are used a lot in Golang standard library.
+- Useful for mocking in Unit Tests
+- Code generalization (Go doesn't support generics)
+
+* Interfaces - Example
+
+.play interfaces.go /START OMIT/,/END OMIT/
+
+* Interfaces are implemented implicitly
+
+- A type implements an interface by implementing its methods. There is no explicit declaration of intent, no "implements" keyword. 
+
+- Implicit interfaces decouple the definition of an interface from its implementation, which could then appear in any package without prearrangement. 
+
+- For example one frequently-used interface is `Writer`, specified by `io` package:
+
+  type Writer interface {
+    Write(p []byte) (n int, err error)
+  }
+
+- Many types, from both the standard library and other Go code, implement the Write method described above, and can thus be used anywhere an `io.Writer` is expected. 
+
+- This means that if type defined by you implements `io.Write` method, it can be used by all this existing code. 
+
+* Be careful with nil underling values
+
+- An interface value holds a value of a specific underlying concrete type. 
+- Under the covers, interface can be thought as a tuple of value and a concrete type:
+
+  (value, type)
+
+* Be careful with nil underling values(2)
+
+.play interfaces-nil.go /START OMIT/,/END OMIT/
+
+* Be careful with nil underling values(3)
+
+This is ugly part of Go and there is no pretty solution to this.
+
+- If you know which types to expect in advance, you can assert them.
+
+  if i.(*int) == nil {
+  }
+
+or
+
+  switch v := i.(type) {
+  case *int:
+    if v == nil {
+    }
+  case *float:
+    if v == nil {
+    }
+  }
+
+- More general and uglier solution, where you don't need to know type in advance is to use the function: 
+
+  reflect.IsNil() 
+
+* Stringer interface
+
+- One of the most ubiquitous interfaces is `Stringer` defined by the `fmt` package.
+- A `Stringer` is a type that can describe itself as a `string`. The `fmt` package (and many others) look for this interface to print values. 
+
+  type Stringer interface {
+   String() string
+  }
+
+.play stringer.go /START OMIT/,/END OMIT/
+- About Workspace and project directory structure
+.link https://golang.org/doc/code.html https://golang.org/doc/code
+
+
+* Error handling
+
+* Error checking
+
+Functions often return an `error` value, and calling code should handle errors by testing whether the error equals `nil`.
+
+  i, err := strconv.Atoi("42")
+  if err != nil {
+    fmt.Fprintf(os.Stderr, "couldn't convert number: %v\n", err)
+    return
+  }
+  fmt.Println("Converted integer:", i)
+
+
+* error interface
+
+The `error` type is a built-in interface:
+
+- It is similar to `fmt.Stringer`
+- `fmt` package looks for the `error` interface when printing values.
+
+  type error interface{
+    Error() string
+    }
+
+* error interface (2)
+
+.play errors.go /START OMIT/,/END OMIT/
