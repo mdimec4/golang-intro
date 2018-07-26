@@ -213,3 +213,85 @@ The `error` type is a built-in interface:
 * error interface (2)
 
 .play errors.go /START OMIT/,/END OMIT/
+
+* Unit testing in Go
+
+* Unit tests
+
+- Test files for package must end with `_test.go`.
+- Files named like this are compiled only if tests are run for the package.
+- Example package `uuid` has two files
+    - uuid.go - package logic
+    - uuid_test.go - package unit tests
+- Test files must import `testing` package
+- Test files must follow this naming format:
+  func Testxxx(t *testing.T)
+  xxx = stands for test description
+   For example func TestFooBar_EmptyString(t testing.T)
+   would test
+   function FooBar(s string)
+   and how it handles empty string for input
+
+* Unit tests - Example
+
+.code factorial.go
+
+* Unit tests - Example
+
+.code factorial_test.go
+
+* Other tests supported by testing package
+
+- Examples
+
+  func ExampleHello() {
+    fmt.Println("hello")
+    // Output: hello
+  }
+
+- Benchmarks
+
+  func BenchmarkHello(b *testing.B) {
+      for i := 0; i < b.N; i++ {
+          fmt.Sprintf("hello")
+      }
+  }
+
+Output:
+
+  BenchmarkHello    10000000    282 ns/op
+
+* Unit Tests - mocking
+
+- An object under test may have dependencies on other (complex) objects. To isolate the behavior of the object you want to replace the other objects by mocks that simulate the behavior of the real objects.
+
+
+- Database would be one such example. We want the production code to communicate with real database, but on the other hand, we want for unit tests to be independent of any external dependencies.
+
+* Unit Tests - mocking (2)
+
+- Method 1 - that works, but is ugly
+
+  type Database struct {
+    GetUserCb func(name string) (*User, error)
+  }
+
+  func (d Database) GetUser(name string) (*User, error) {
+    if d.GetUserCb != nil {
+      return d.GetUserCb(name)
+    }
+    return, nil, errrors.New("database backend method not set")
+  }
+
+- Method 2 - the Go way
+
+  type Database interface {
+    GetUser(name string) (*User, error)
+  }
+
+
+* Sources
+
+-https://tour.golang.org/welcome/1
+- https://github.com/golang/dep
+- https://golang.org/pkg/testing/
