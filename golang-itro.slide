@@ -214,7 +214,7 @@ The `error` type is a built-in interface:
 
 .play errors.go /START OMIT/,/END OMIT/
 
-* Unit testing in Go
+* Package testing 
 
 * Unit tests
 
@@ -292,6 +292,9 @@ Output:
 
 * Sources
 
--https://tour.golang.org/welcome/1
-- https://github.com/golang/dep
-- https://golang.org/pkg/testing/
+- A Tour of Go
+.link https://tour.golang.org/welcome/1 https://tour.golang.org/welcome/1
+- Go Dep
+.link https://github.com/golang/dep https://github.com/golang/dep
+- Package testing 
+.link https://golang.org/pkg/testing/ https://golang.org/pkg/testing/
