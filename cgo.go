@@ -7,8 +7,7 @@ package main
 // char* join_strings(const char *s1, const char *s2)
 // {
 //   char* result = malloc(strlen(s1) + strlen(s2) + 1); // BUG check if malloc returns NULL
-//   strcat(strcpy(result, s1), s2);
-//   return result;
+//   return strcat(strcpy(result, s1), s2);
 // }
 import "C"
 import (
