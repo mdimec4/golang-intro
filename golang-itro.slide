@@ -289,6 +289,11 @@ Output:
     GetUser(name string) (*User, error)
   }
 
+* C bindings and cgo
+
+.play cgo.go
+
+
 
 * Sources
 
@@ -298,3 +303,7 @@ Output:
 .link https://github.com/golang/dep https://github.com/golang/dep
 - Package testing 
 .link https://golang.org/pkg/testing/ https://golang.org/pkg/testing/
+- C? Go? Cgo!
+.link https://blog.golang.org/c-go-cgo https://blog.golang.org/c-go-cgo
+- Command cgo
+.link https://golang.org/cmd/cgo/ https://golang.org/cmd/cgo/
