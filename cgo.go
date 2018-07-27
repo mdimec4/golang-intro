@@ -19,6 +19,6 @@ func main() {
 	c_joined := C.join_strings(c_s1, c_s2)
 	C.free(unsafe.Pointer(c_s1))
 	C.free(unsafe.Pointer(c_s2))
-	fmt.Println("C function 'join_string()' returned: ", C.GoString(c_joined))
+	fmt.Println(C.GoString(c_joined))
 	C.free(unsafe.Pointer(c_joined))
 }
