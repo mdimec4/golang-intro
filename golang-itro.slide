@@ -118,7 +118,15 @@ A method is a function with special receiver argument
 
 * Interfaces - Example
 
-.play interfaces.go /START OMIT/,/END OMIT/
+- `Abser` interface
+.code interfaces.go /START ABSER OMIT/,/END ABSER OMIT/
+- `Vertex` and `MyFloat` both implement `Abser`
+.code interfaces.go /START VERTEX OMIT/,/END VERTEX OMIT
+.code interfaces.go /START MYFLOAT OMIT/,/END MYFLOAT OMIT
+
+* Interfaces - Example(2)
+.play interfaces.go /START MAIN OMIT/,/END MAIN OMIT/
+
 
 * Interfaces are implemented implicitly
 
