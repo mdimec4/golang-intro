@@ -85,7 +85,7 @@ What is the purpose:
 
 .code recipes.go
 
-* Go dependency manager
+* Go advanced dependency manager
 
 - For bigger projects you really need dependency manager
 
@@ -297,8 +297,111 @@ Output:
     GetUser(name string) (*User, error)
   }
 
+* Concurrency
+
+* Concurency
+
+_"Concurrency_ _is_ _not_ _a_ _parallelism._ _..._
+_Concurrency_ _is_ _about_ *dealing* *with* _lots_ _of_ _things_ _at_ _once.
+_Parallelism_ _is_ _about_ *doing* _lots_ _of_ _things_ _at_ _once."_
+
+*Rob* *Pike* - *Concurrency* *is* *not* *Parallelism* - *2013*
+
+- This mean that the real world is *concurrent*, and a lot of things are happening at once. 
+- Concurrency is how we deal with this.
+- Concurrency can virtually be achieved on one processor with multitasking, but true parallelism can only be achieved with multiple processors.
+
+* Goroutines
+
+- a `goroutine` is lightweight thread managed by Go runtime.
+- runtime can multiplex several goroutines on single system thread. Actually runtime usually has a pool of system threads available for this purpose.
+
+  go f(x, y, y) 
+
+- The evaluation of `f`, `x`, `y` and `z` happens on current current goroutine. 
+- Execution of `f` happens in the new goroutine.
+- Goroutines run in the same address space, so access to shared memory must be synchronized. 
+
+* Goroutines - Example
+
+.play goroutines.go
+
+* Channels
+
+- Channels are a typed conduit through which you can send and receive values with the channel operator, `<-`.
+
+  ch <- v    // Send v to channel ch.
+  v := <-ch  // Receive from ch, and
+             // assign value to v.
+
+-  Like maps and slices, channels must be created before use:
+
+  ch := make(chan int)
+
+- By default, sends and receives block until the other side is ready. This allows goroutines to synchronize without explicit locks or condition variables. 
+
+* Channels - Example
+
+- The example code sums the numbers in a slice, distributing the work between two goroutines. Once both goroutines have completed their computation, it calculates the final result. 
+
+.play channels.go /START OMIT/,/END OMIT/
+
+* Buffered channels
+
+- Channels can be buffered. Provide the buffer length as the second argument to make to initialize a buffered channel:
+
+  ch := make(chan int, 100)
+
+- Sends to a buffered channel block only when the buffer is full. Receives block when the buffer is empty.
+
+.play buffered-channels.go
+
+* Range and Close
+
+- A sender can `close` a channel to indicate that no more values will be sent.
+- Receivers can test whether a channel has been closed by assigning a second parameter to the receive expression
+
+  v, ok := <-ch // ok == false if channel is closed
+
+- *NOTE* Only sender should close the channel
+- *NOTE* Channels are not files and it is not mandatory to close them after use.
+
+- Use `range` to loop receive from channel
+
+* Range and Close - Example
+
+.play range-and-close.go
+
+* Select
+
+- The select statement lets a goroutine wait on multiple channels.
+- A select blocks until at least one of its cases can run, then it executes that case
+
+.play selection.go
+
+* Default selection
+
+- The `default` case in a select is run if no other case is ready.
+- Use a `default` case to try a send or receive without blocking
+
+.play selection-default.go /START OMIT/,/END OMIT/
+
+* sync.Mutex
+
+- Channels are great for communication in between goroutines.
+- But sometimes we just want to make sure that only one goroutine at the time can access a variable avoiding conflicts.
+
+* sync.Mutex - Example
+
+.code mutex.go /START OMIT/,/END OMIT/
+
+* sync.Mutex - Example(2)
+
+.play mutex.go /START MAIN OMIT/,/END MAIN OMIT/
+
 * C bindings and cgo
 
+* cgo Example
 .play cgo.go
 
 
