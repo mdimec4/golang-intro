@@ -399,6 +399,12 @@ _Parallelism_ _is_ _about_ *doing* _lots_ _of_ _things_ _at_ _once."_
 
 .play mutex.go /START MAIN OMIT/,/END MAIN OMIT/
 
+* sync.Wait
+
+- sync.WaitGroup provides a goroutine synchronization mechanism in Golang, and is used for waiting for a collection of goroutines to finish.
+
+.play waitgroup.go /START OMIT/,/END OMIT/
+
 * C bindings and cgo
 
 * cgo Example
