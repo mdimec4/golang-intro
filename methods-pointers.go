@@ -4,7 +4,7 @@ import "fmt"
 
 type myFloat float64
 
-func (f *myFloat) Scale(s float64) { //Methods with pointer receivers can modify the value
+func (f *myFloat) Scale(s float64) { // Methods with pointer receivers can modify the value
 	*f = *f * myFloat(s)
 }
 

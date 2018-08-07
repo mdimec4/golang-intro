@@ -23,17 +23,14 @@ A workspace is a directory hierarchy with three directories at its root:
 
 - `src` contains Go source files,
 - `pkg` contains package objects, and 
-- `bin` contains executable commands. 
+- `bin` contains executable commands.
 
 What is the purpose:
 
 - The `go` tool builds source packages and installs the resulting binaries to the `pkg` and `bin` directories.
 
-- The `src` subdirectory typically contains multiple version control repositories (such as for Git or Mercurial) that track the development of one or more source packages. 
+- The `src` sub directory typically contains multiple projects (git repositories). 
 
-- It is convenient to add this location to your `$PATH`)
-
-  export GOPATH=$(go env GOPATH)
 
 * Workspace directory structure
   $GOPATH
@@ -142,7 +139,7 @@ A method is a function with special receiver argument
 
 - Many types, from both the standard library and other Go code, implement the Write method described above, and can thus be used anywhere an `io.Writer` is expected. 
 
-- This means that if type defined by you implements `io.Write` method, it can be used by all this existing code. 
+- This means that if type defined by you implements `io.Write` interface, then it can be used by all this existing code. 
 
 * Be careful with nil underling values
 
